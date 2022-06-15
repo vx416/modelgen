@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -24,7 +25,8 @@ func Parse(ddl string) ([]TableDDL, error) {
 			continue
 		}
 		if err != nil {
-			return nil, err
+			fmt.Println(err)
+			continue
 		}
 		ddls = append(ddls, ddl)
 	}

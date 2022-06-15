@@ -3,11 +3,11 @@ package parser
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 var createTable = `
+-- +goose Up
 CREATE TABLE point_third_orders (
 	id bigint(20) NOT NULL AUTO_INCREMENT,
 	serial varchar(50) NOT NULL DEFAULT '',
@@ -25,12 +25,16 @@ CREATE TABLE point_third_orders (
 	created_ati INT NOT NULL DEFAULT 0,
 	updated_ati INT NOT NULL DEFAULT 0,
 	completed_ati INT NOT NULL DEFAULT 0 COMMENT '訂單完成時間'
-  );
+);
+
+-- +goose Down
+-- +goose StatementBegin
+SELECT 'down SQL query';
+-- +goose StatementEnd
  `
 
 func TestParse(t *testing.T) {
-	ddl, err := ParseDDL(createTable)
+	ddl, err := Parse(createTable)
 	require.NoError(t, err, "parse failed")
-	assert.Equal(t, ddl.TableName, "point_third_orders")
-	assert.Len(t, ddl.Columns, 16)
+	t.Log(ddl)
 }
