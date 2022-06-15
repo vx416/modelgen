@@ -14,14 +14,15 @@ type Settings struct {
 
 type OutputSettings struct {
 	Print       bool
-	Destination string
+	OutputPath  string
 	PackageName string
 	AppendOnly  bool
 }
 
 type ModelSettings struct {
-	Tag    string `db:"id"`
-	DBKind string
+	Tag        string
+	TableNames string
+	DBKind     string
 }
 
 func (set ModelSettings) GetTag(col string) string {

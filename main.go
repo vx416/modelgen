@@ -3,11 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/vx416/modelgen/pkg/modelgen"
-	"github.com/vx416/modelgen/pkg/output"
+
 	"github.com/vx416/modelgen/pkg/setting"
 )
 
@@ -15,7 +14,8 @@ var s = &setting.Settings{}
 
 func newSettings() {
 	flag.StringVar(&s.InputPath, "i", "", "file path of schema file")
-	flag.StringVar(&s.Destination, "o", "", "destination of output content")
+	flag.StringVar(&s.TableNames, "tables", "", "table name splited by comma")
+	flag.StringVar(&s.OutputPath, "o", "", "destination of output content")
 	flag.StringVar(&s.Tag, "tag", "db", "model tag")
 	flag.StringVar(&s.PackageName, "package", "model", "package of model")
 	flag.StringVar(&s.DBKind, "db", "mysql", "kind of database")
@@ -28,17 +28,12 @@ func newSettings() {
 func main() {
 	newSettings()
 
-	data, err := ioutil.ReadFile(s.InputPath)
+	models, err := modelgen.FilterModelsFromPath(s)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	models, err := modelgen.NewModels(s, string(data))
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	res, err := output.Output(s.AppendOnly, s.PackageName, models)
+	res, err := modelgen.GetOutput(s.AppendOnly, s.PackageName, models)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -46,8 +41,8 @@ func main() {
 	if s.Print {
 		fmt.Println(res)
 	}
-	if s.Destination != "" {
-		outputFile, err := os.Create(s.Destination)
+	if s.OutputPath != "" {
+		outputFile, err := os.Create(s.OutputPath)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)

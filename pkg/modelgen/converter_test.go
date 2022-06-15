@@ -5,7 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/vx416/modelgen/pkg/parser"
 	"github.com/vx416/modelgen/pkg/setting"
 )
 
@@ -31,7 +30,7 @@ CREATE TABLE point_third_orders (
  `
 
 func TestConverter(t *testing.T) {
-	ddl, err := parser.ParseDDL(createTable)
+	ddl, err := ParseDDL(createTable)
 	require.NoError(t, err, "parse failed")
 	assert.Equal(t, ddl.TableName, "point_third_orders")
 	assert.Len(t, ddl.Columns, 16)

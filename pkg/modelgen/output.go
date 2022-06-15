@@ -1,11 +1,9 @@
-package output
+package modelgen
 
 import (
 	"bytes"
 	"html/template"
 	"strings"
-
-	"github.com/vx416/modelgen/pkg/modelgen"
 )
 
 const modelTemplate = `
@@ -27,7 +25,7 @@ type {{.Name}} struct {
 {{end}}
 `
 
-func Output(appendOnly bool, packageName string, models []*modelgen.Model) (string, error) {
+func GetOutput(appendOnly bool, packageName string, models []*Model) (string, error) {
 	t, err := template.New("").Parse(modelTemplate)
 	if err != nil {
 		return "", err

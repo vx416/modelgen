@@ -2,17 +2,18 @@ package modelgen
 
 import (
 	"github.com/pkg/errors"
-	"github.com/vx416/modelgen/pkg/parser"
+
 	"github.com/vx416/modelgen/pkg/setting"
 )
 
 type Model struct {
-	Name   string
-	Fields []string
+	Name      string
+	TableName string
+	Fields    []string
 }
 
 func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
-	ddls, err := parser.Parse(ddlStr)
+	ddls, err := Parse(ddlStr)
 	if err != nil {
 		return nil, errors.Wrap(err, "parser ddl failed")
 	}
@@ -21,7 +22,8 @@ func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
 
 	for _, ddl := range ddls {
 		model := Model{
-			Name: camelCaseString(ddl.TableName),
+			Name:      camelCaseString(ddl.TableName),
+			TableName: ddl.TableName,
 		}
 		sfs, err := Converter(ddl.Columns, setting)
 		if err != nil {
