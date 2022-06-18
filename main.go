@@ -21,6 +21,7 @@ func newSettings() {
 	flag.StringVar(&s.DBKind, "db", "mysql", "kind of database")
 
 	flag.BoolVar(&s.Print, "print", true, "print out of generated content")
+	flag.BoolVar(&s.JsonTag, "json", true, "add json tag")
 	flag.BoolVar(&s.AppendOnly, "append", false, "append only")
 	flag.Parse()
 }

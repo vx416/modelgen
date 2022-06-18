@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/vx416/modelgen/pkg/dbhelper"
+	"github.com/vx416/modelgen/pkg/util"
 )
 
 type Settings struct {
@@ -21,6 +22,7 @@ type OutputSettings struct {
 
 type ModelSettings struct {
 	Tag        string
+	JsonTag    bool
 	TableNames string
 	DBKind     string
 }
@@ -28,11 +30,11 @@ type ModelSettings struct {
 func (set ModelSettings) GetTag(col string) string {
 	switch set.Tag {
 	case "db", "DB":
-		return dbTag(col)
+		return dbTag(col, set.JsonTag)
 	case "gorm", "GORM":
-		return gormTag(col)
+		return gormTag(col, set.JsonTag)
 	default:
-		return dbTag(col)
+		return dbTag(col, set.JsonTag)
 	}
 }
 
@@ -45,10 +47,20 @@ func (set ModelSettings) GetHelper() dbhelper.Helper {
 	}
 }
 
-func dbTag(colName string) string {
-	return "`db:" + fmt.Sprintf(`"%s"`, colName) + "`"
+func dbTag(colName string, jsonTagOn bool) string {
+	if jsonTagOn {
+		return fmt.Sprintf("`%s db:%s%s%s`", jsonTag(colName), `"`, colName, `"`)
+	}
+	return fmt.Sprintf("`db:%s%s%s`", `"`, colName, `"`)
 }
 
-func gormTag(colName string) string {
+func gormTag(colName string, jsonTagOn bool) string {
+	if jsonTagOn {
+		return fmt.Sprintf("`%s gorm:%scolumn:%s%s`", jsonTag(colName), `"`, colName, `"`)
+	}
 	return fmt.Sprintf("`gorm:%scolumn:%s%s`", `"`, colName, `"`)
+}
+
+func jsonTag(colName string) string {
+	return fmt.Sprintf(`json:"%s"`, util.CamelCaseString(colName))
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/vx416/modelgen/pkg/dbhelper"
 	"github.com/vx416/modelgen/pkg/setting"
+	"github.com/vx416/modelgen/pkg/util"
 	"github.com/xwb1989/sqlparser"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -47,7 +48,7 @@ func (sf StructField) String() string {
 func convertToStructField(helper dbhelper.Helper, column *sqlparser.ColumnDefinition, tag string) (StructField, error) {
 	colType := column.Type.Type
 	stField := StructField{
-		Name: camelCaseString(column.Name.String()),
+		Name: util.CamelCaseString(column.Name.String()),
 		Tag:  tag,
 	}
 	if helper.IsString(colType) || helper.IsText(colType) {
@@ -93,30 +94,6 @@ func convertToStructField(helper dbhelper.Helper, column *sqlparser.ColumnDefini
 	}
 
 	return stField, nil
-}
-
-func camelCaseString(s string) string {
-	if s == "" {
-		return s
-	}
-	splitted := strings.Split(s, "_")
-
-	if len(splitted) == 1 {
-		if s == "id" {
-			return "ID"
-		}
-		return caser.String(s)
-	}
-
-	var cc string
-	for _, part := range splitted {
-		if part == "id" {
-			cc += "ID"
-			continue
-		}
-		cc += caser.String(strings.ToLower(part))
-	}
-	return cc
 }
 
 func dbTag(colName string) string {
