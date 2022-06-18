@@ -50,5 +50,5 @@ func dbTag(colName string) string {
 }
 
 func gormTag(colName string) string {
-	return "`gorm:column" + `"` + colName + `"` + "`"
+	return fmt.Sprintf("`gorm:%scolumn:%s%s`", `"`, colName, `"`)
 }

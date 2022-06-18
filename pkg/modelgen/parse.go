@@ -101,6 +101,7 @@ func ParseDDL(ddlStr string) (TableDDL, error) {
 	if tableName == "" {
 		return TableDDL{}, errors.New("table name cannot be empty")
 	}
+
 	columns := ddlStmt.TableSpec.Columns
 	if len(columns) == 0 {
 		return TableDDL{}, errors.New("column cannot be empty")
