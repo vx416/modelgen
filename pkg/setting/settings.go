@@ -62,5 +62,5 @@ func gormTag(colName string, jsonTagOn bool) string {
 }
 
 func jsonTag(colName string) string {
-	return fmt.Sprintf(`json:"%s"`, util.CamelCaseString(colName))
+	return fmt.Sprintf(`json:"%s"`, util.LowercaseCamelCaseString(colName))
 }
