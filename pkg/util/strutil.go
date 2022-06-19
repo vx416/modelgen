@@ -3,13 +3,19 @@ package util
 import (
 	"strings"
 
+	pluralize "github.com/gertd/go-pluralize"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
 
 var (
-	caser = cases.Title(language.English, cases.NoLower)
+	caser      = cases.Title(language.English, cases.NoLower)
+	pluralizer = pluralize.NewClient()
 )
+
+func Singular(s string) string {
+	return pluralizer.Singular(s)
+}
 
 func CamelCaseString(s string) string {
 	if s == "" {

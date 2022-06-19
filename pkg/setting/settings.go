@@ -14,13 +14,15 @@ type Settings struct {
 }
 
 type OutputSettings struct {
-	Print       bool
-	OutputPath  string
-	PackageName string
-	AppendOnly  bool
+	Print        bool
+	OutputPath   string
+	PbOutputPath string
+	PackageName  string
+	AppendOnly   bool
 }
 
 type ModelSettings struct {
+	Pb         bool
 	Tag        string
 	JsonTag    bool
 	TableNames string

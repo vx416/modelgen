@@ -1,19 +1,12 @@
 package modelgen
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/vx416/modelgen/pkg/dbhelper"
 	"github.com/vx416/modelgen/pkg/setting"
 	"github.com/vx416/modelgen/pkg/util"
 	"github.com/xwb1989/sqlparser"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
-)
-
-var (
-	caser = cases.Title(language.English, cases.NoLower)
 )
 
 func Converter(columns []*sqlparser.ColumnDefinition, setting *setting.Settings) ([]*StructField, error) {
@@ -94,12 +87,4 @@ func convertToStructField(helper dbhelper.Helper, column *sqlparser.ColumnDefini
 	}
 
 	return stField, nil
-}
-
-func dbTag(colName string) string {
-	return fmt.Sprintf(`db:"%s"`, colName)
-}
-
-func gormTag(colName string) string {
-	return fmt.Sprintf(`gorm:"column:%s"`, colName)
 }

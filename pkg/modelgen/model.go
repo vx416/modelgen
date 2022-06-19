@@ -11,6 +11,7 @@ type Model struct {
 	Name      string
 	TableName string
 	Fields    []string
+	PbFields  []string
 }
 
 func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
@@ -23,7 +24,7 @@ func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
 
 	for _, ddl := range ddls {
 		model := Model{
-			Name:      util.CamelCaseString(ddl.TableName),
+			Name:      util.Singular(util.CamelCaseString(ddl.TableName)),
 			TableName: ddl.TableName,
 		}
 		sfs, err := Converter(ddl.Columns, setting)
@@ -34,8 +35,17 @@ func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
 		for _, sf := range sfs {
 			model.Fields = append(model.Fields, sf.String())
 		}
-
 		models = append(models, &model)
+		if setting.Pb {
+			pbs, err := PbConverter(ddl.Columns, setting)
+			if err != nil {
+				return nil, err
+			}
+			model.PbFields = make([]string, 0, len(pbs))
+			for _, pb := range pbs {
+				model.PbFields = append(model.PbFields, pb.String())
+			}
+		}
 	}
 
 	return models, nil
