@@ -47,12 +47,12 @@ func LowercaseCamelCaseString(s string) string {
 
 	var cc string
 	for i, part := range splitted {
-		if strings.EqualFold(part, "id") {
-			cc += "id"
-			continue
-		}
 		if i == 0 {
 			cc += strings.ToLower(part)
+			continue
+		}
+		if strings.EqualFold(part, "id") {
+			cc += "ID"
 			continue
 		}
 		cc += caser.String(strings.ToLower(part))
