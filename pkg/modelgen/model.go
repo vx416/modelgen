@@ -1,6 +1,8 @@
 package modelgen
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 
 	"github.com/vx416/modelgen/pkg/setting"
@@ -12,6 +14,7 @@ type Model struct {
 	TableName string
 	Fields    []string
 	PbFields  []string
+	Methods   []string
 }
 
 func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
@@ -35,6 +38,7 @@ func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
 		for _, sf := range sfs {
 			model.Fields = append(model.Fields, sf.String())
 		}
+		addTableNameMethod(&model)
 		models = append(models, &model)
 		if setting.Pb {
 			pbs, err := PbConverter(ddl.Columns, setting)
@@ -49,4 +53,12 @@ func NewModels(setting *setting.Settings, ddlStr string) ([]*Model, error) {
 	}
 
 	return models, nil
+}
+
+func addTableNameMethod(model *Model) {
+	model.Methods = append(model.Methods, fmt.Sprintf(`
+	func (model %s) TableName() string {
+		return "%s"
+	}
+	`, model.Name, model.TableName))
 }

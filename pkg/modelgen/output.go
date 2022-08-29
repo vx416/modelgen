@@ -22,6 +22,10 @@ type {{.Name}} struct {
 	{{.}}
 	{{- end}}
 }
+
+{{- range .Methods}}
+{{.}}
+{{- end}}
 {{end}}
 `
 
