@@ -23,9 +23,10 @@ func Converter(columns []*sqlparser.ColumnDefinition, setting *setting.Settings)
 }
 
 type StructField struct {
-	Name string
-	Type string
-	Tag  string
+	Name    string
+	Type    string
+	Tag     string
+	Comment string
 }
 
 func (sf StructField) String() string {
@@ -35,6 +36,11 @@ func (sf StructField) String() string {
 	structFields.WriteString(sf.Type)
 	structFields.WriteString(" ")
 	structFields.WriteString(sf.Tag)
+	if sf.Comment != "" {
+		structFields.WriteString("// ")
+		structFields.WriteString(sf.Comment)
+	}
+
 	return structFields.String()
 }
 
@@ -43,6 +49,9 @@ func convertToStructField(helper dbhelper.Helper, column *sqlparser.ColumnDefini
 	stField := StructField{
 		Name: util.CamelCaseString(column.Name.String()),
 		Tag:  tag,
+	}
+	if column.Type.Comment != nil {
+		stField.Comment = string(column.Type.Comment.Val)
 	}
 	if helper.IsString(colType) || helper.IsText(colType) {
 		stField.Type = "string"
