@@ -3,7 +3,6 @@ package modelgen
 import (
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -42,7 +41,7 @@ func FilterModelsFromPath(s *setting.Settings) ([]*Model, error) {
 				return err
 			}
 			if !info.IsDir() {
-				data, err := ioutil.ReadFile(path)
+				data, err := os.ReadFile(path)
 				if err != nil {
 					return err
 				}
@@ -60,6 +59,20 @@ func FilterModelsFromPath(s *setting.Settings) ([]*Model, error) {
 		})
 		if err != nil {
 			return nil, err
+		}
+	} else {
+		data, err := os.ReadFile(s.InputPath)
+		if err != nil {
+			return nil, err
+		}
+		models, err := NewModels(s, string(data))
+		if err != nil {
+			return nil, err
+		}
+		for _, m := range models {
+			if tableNamesMap[strings.ToLower(m.TableName)] {
+				filterModels = append(filterModels, m)
+			}
 		}
 	}
 	return filterModels, nil
